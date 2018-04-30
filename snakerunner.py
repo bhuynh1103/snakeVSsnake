@@ -2,32 +2,26 @@ import pygame, sys
 from snake import *
 from food import *
 from pygame.locals import *
-from rgb import *
+from constants import *
 
 pygame.init()
 pygame.font.init()
 
 # Creates screen
-width = 1000
-height = 1000
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Snake VS Snake")
 
-# Scale controls the size of all components of the game except the window size
-# Scale should be divisible by screen width and screen height
-scale = 50
-winScore = 25
 
 # Instantiates snake and food
 player1 = Snake(scale, scale, red)
 player2 = Snake(width - scale * 2, height - scale * 2, blue)
 
-food1 = Food(width, height, scale)
-food2 = Food(width, height, scale)
+food1 = Apple(green)
+food2 = Apple(green)
+# freeze = Freeze(lightBlue)
 
 # Changes player 2's direction so that it doesn't run into border on start
 player2.dir(-1, 0)
-
 
 # Based on what input is given, changes direction
 def keyPressed(up, left, down, right, player):
@@ -61,7 +55,7 @@ def eaten(player, otherPlayer, food):
         food.check(player.tail, otherPlayer.tail, width, height, scale)
         player.total += 2
         player.score += 1
-        
+
 
 # Loop control variables
 pause = False
@@ -77,26 +71,33 @@ while not GameOver:
         screen.fill(black)
         pygame.draw.rect(screen, gray(51), (0, 0, width, height), (scale * 2) - 1)
 
-        player1.death(screen, width, height, scale, player2.tail)
-        player1.update(width, height, scale)
-        
-        player2.death(screen, width, height, scale, player1.tail)
-        player2.update(width, height, scale)        
+        player1.death(screen, player2.tail)
+        player1.update()
+
+        player2.death(screen, player1.tail)
+        player2.update()
 
         # Draws snake and food
-        player1.draw(screen, scale)
-        player2.draw(screen, scale)
-        food1.draw(screen, scale)
-        food2.draw(screen, scale)
+        player1.draw(screen)
+        player2.draw(screen)
+
+        food1.draw(screen)
+        food2.draw(screen)
+
+        # freeze.draw(screen)
 
         # DEBUG
         # print(snake.tail, snake.total)
 
         # If snake is at same position as food, then it is 'eaten'
-        eaten(player1, player2, food1)
-        eaten(player1, player2, food2)
-        eaten(player2, player1, food1)
-        eaten(player2, player1, food2)
+        food1.eaten(player1, player2)
+        food1.eaten(player2, player1)
+
+        food2.eaten(player1, player2)
+        food2.eaten(player2, player1)
+
+        # freeze.eaten(player1, player2)
+        # freeze.eaten(player2, player1)
 
         # Displays scores
         writeText(screen, str(player1.score), width * (1 / 3), scale // 2, player1.color, int(scale * .66))
@@ -126,10 +127,10 @@ while not GameOver:
     screen.fill(black)
     pygame.draw.rect(screen, yellow, (0, 0, width, height), (scale * 2) - 1)
 
-    player1.draw(screen, scale)
-    player2.draw(screen, scale)
-    food1.draw(screen, scale)
-    food2.draw(screen, scale)
+    player1.draw(screen)
+    player2.draw(screen)
+    food1.draw(screen)
+    food2.draw(screen)
 
     writeText(screen, str(player1.score), width * (1 / 3), scale // 2, player1.color, int(scale * .66))
     writeText(screen, str(player2.score), width * (2 / 3), scale // 2, player2.color, int(scale * .66))
@@ -150,10 +151,10 @@ while True:
     screen.fill(black)
     pygame.draw.rect(screen, white, (0, 0, width, height), (scale * 2) - 1)
 
-    player1.draw(screen, scale)
-    player2.draw(screen, scale)
-    food1.draw(screen, scale)
-    food2.draw(screen, scale)
+    player1.draw(screen)
+    player2.draw(screen)
+    food1.draw(screen)
+    food2.draw(screen)
 
     writeText(screen, str(player1.score), width * (1 / 3), scale // 2, player1.color, int(scale * .66))
     writeText(screen, str(player2.score), width * (2 / 3), scale // 2, player2.color, int(scale * .66))

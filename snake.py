@@ -1,5 +1,5 @@
 import pygame
-
+from constants import *
 
 
 class Snake:
@@ -11,10 +11,9 @@ class Snake:
         self.ySpeed = 0
         self.total = 0
         self.tail = []
-        self.score = 0 
-        self.highscore = 0
+        self.score = 0
 
-    def update(self, width, height, scale):
+    def update(self):
         # Maintains list of (x, y) points of snake's tail
         while len(self.tail) != self.total:
             self.tail.append([self.x, self.y])
@@ -36,13 +35,13 @@ class Snake:
             self.y -= self.ySpeed * scale
 
     # Draws snake head and tail
-    def draw(self, window, scale):
+    def draw(self, window):
         i = 0
         while i < len(self.tail):
             pygame.draw.rect(window, self.color, (self.tail[i][0], self.tail[i][1], scale, scale))
             pygame.draw.rect(window, (0, 0, 0), (self.tail[i][0], self.tail[i][1], scale, scale), 1)
             i += 1
-            
+
         pygame.draw.rect(window, self.color, (self.x, self.y, scale, scale))
         pygame.draw.rect(window, (0, 0, 0), (self.x, self.y, scale, scale), 1)
 
@@ -59,7 +58,7 @@ class Snake:
             return False
 
     # Checks for various things that would end game and resets game
-    def death(self, window, width, height, scale, othertail):
+    def death(self, window, othertail):
         i = 0
         while i < len(self.tail):
             xPos = self.tail[i][0]
